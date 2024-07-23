@@ -2,14 +2,31 @@
 
 @section('content')
 
-    <h1>Admin dashboard page</h1>
+  <h2 data="header-admin">Admin dashboard</h2>
 
-    <div class="card" style="w-75>
-        <div class="card-body">
-          <h5 class="card-title">Sales</h5>
-          <h6 class="card-subtitle mb-2 text-muted">desc</h6>
-          <p class="card-text">Some text</p>
-        </div>
-    </div>
+  <div class="loader"></div>
+
+  <script>
+    const getUrl = "{{ route('admin.dashboard') }}";
+    function loadData() {
+        $.ajax({
+            headers: {
+                'x-refresh': true
+            },
+            url: getUrl,
+            method: 'GET',
+        }).done(function(response) {
+            // console.log('response: ', response);
+            $("[data=header-admin]").after(response);
+        }).fail(function(error) {
+            alert(error);
+        });
+    }
+
+    setTimeout(() => {
+        $(".loader").remove();
+        loadData();
+    }, 2000);
+</script>
 
 @endsection
