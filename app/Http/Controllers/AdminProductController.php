@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\File;
 
 class AdminProductController extends Controller
 {
@@ -27,7 +28,17 @@ class AdminProductController extends Controller
      */
     public function store(Request $request)
     {
-        dd('Store method');
+        // validate and store the product
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => 'required',
+            'file' => ['required', File::types(['text/plain'])->min('1kb'), 'extensions:txt'],
+            'image' => ['required', File::types(['png', 'jpeg', 'jpg'])->min('10kb')->max('1024kb')], // Validate that an uploaded file is exactly 400 kilobytes...
+        ]);
+
+        $allInputs = $request->all();
+
+        dd($allInputs);
     }
 
     /**
