@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
+use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules\File;
+
 
 class AdminProductController extends Controller
 {
@@ -12,7 +14,15 @@ class AdminProductController extends Controller
      */
     public function index()
     {
-        return view('admin.products');
+        $products = Product::select(['id', 'name', 'is_available_for_purchase', 'price_in_cents'])
+        ->where('is_available_for_purchase', false)
+        ->orderBy('id', 'asc')
+        ->withCount('orders')
+        ->get();
+
+        return view('admin.products', [
+            'products' => $products
+        ]);
     }
 
     /**
@@ -26,19 +36,23 @@ class AdminProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
         // validate and store the product
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'description' => 'required',
-            'file' => ['required', File::types(['text/plain'])->min('1kb'), 'extensions:txt'],
-            'image' => ['required', File::types(['png', 'jpeg', 'jpg'])->min('10kb')->max('1024kb')], // Validate that an uploaded file is exactly 400 kilobytes...
+        $validated = $request->validated();
+
+        // Retrieve a portion of the validated input data...
+        $validated = $request->safe()->only(['name', 'description', 'priceInCents', 'file', 'image']);
+        // dd($validated);
+        $product = Product::create([
+            'name' => $validated['name'], 
+            'description' => $validated['description'], 
+            'price_in_cents' => $validated['priceInCents'], 
+            'file_path' => $validated['file']->getClientOriginalName(), 
+            'image_path' => $validated['image']->getClientOriginalName()
         ]);
-
-        $allInputs = $request->all();
-
-        dd($allInputs);
+        
+        return redirect()->route('admin.products');
     }
 
     /**
