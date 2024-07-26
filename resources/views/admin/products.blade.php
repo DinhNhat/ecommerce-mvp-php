@@ -8,7 +8,6 @@
             border-collapse: collapse;
             border-spacing: 0;
             width: 100%;
-            border: 1px solid #ddd;
         }
 
         th, td {
@@ -30,6 +29,7 @@
 
     <table>
         <tr>
+            <th></th>
             <th>Name</th>
             <th>Price</th>
             <th>Orders</th>
@@ -38,6 +38,7 @@
         @if ($products->count() > 0)
             @foreach ($products as $product)
                 <tr>
+                    <td><i class="bi bi-check-circle" style="font-size: 1.2rem; color: cornflowerblue;"></i></td>
                     <td>{{ $product->name }}</td>
                     <td>{{ \Illuminate\Support\Number::currency(($product->price_in_cents / 100), 'CAD')  }}</td>
                     <td>{{ $product->orders_count }}</td>

@@ -33,7 +33,15 @@ class StoreProductRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'description' => 'required',
             'priceInCents' => ['required', 'integer', 'min:1'],
-            'file' => ['required', File::types(['text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])->min('1kb')],
+            'file' => [
+                'required', 
+                File::types([
+                    'text/plain', 
+                    'application/msword', 
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+                    'application/pdf'
+                ])->min('1kb')
+            ],
             'image' => ['required', File::types(['png', 'jpeg', 'jpg'])->min('10kb')->max('1024kb')], // Validate that an uploaded file is exactly 400 kilobytes...
         ];
     }

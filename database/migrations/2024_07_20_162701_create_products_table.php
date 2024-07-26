@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('name');
             $table->integer('price_in_cents');
             $table->string('image_path');
-            $table->string('description');
+            $table->string('file_path');
+            $table->longText('description');
             $table->boolean('is_available_for_purchase')->default(true);
 
             $table->timestamp('created_at')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));

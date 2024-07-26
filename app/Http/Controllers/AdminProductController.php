@@ -15,7 +15,7 @@ class AdminProductController extends Controller
     public function index()
     {
         $products = Product::select(['id', 'name', 'is_available_for_purchase', 'price_in_cents'])
-        ->where('is_available_for_purchase', false)
+        ->where('is_available_for_purchase', true)
         ->orderBy('id', 'asc')
         ->withCount('orders')
         ->get();
@@ -43,7 +43,7 @@ class AdminProductController extends Controller
 
         // Retrieve a portion of the validated input data...
         $validated = $request->safe()->only(['name', 'description', 'priceInCents', 'file', 'image']);
-        // dd($validated);
+        //dd($validated);
         $product = Product::create([
             'name' => $validated['name'], 
             'description' => $validated['description'], 
