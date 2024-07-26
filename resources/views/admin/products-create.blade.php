@@ -75,7 +75,23 @@
 
 
             $("[data='product-image']").on('change', function() {
-                console.log(123);
+                const form = new FormData();
+                form.append('image', $(this)[0].files[0]);
+
+                $.ajax({
+                    contentType: false,
+                    processData: false,
+                    dataType: 'JSON',
+                    data: form,
+                    url: "{{ route('admin.products.uploadImage') }}",
+                    method: 'POST',
+                    success: function(results) {
+                        console.log(results);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
             });
         });
     </script>

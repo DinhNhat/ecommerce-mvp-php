@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Services\UploadService;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -96,5 +97,19 @@ class AdminProductController extends Controller
         $product->save();
 
         return redirect()->route('admin.products');
+    }
+
+    public function uploadImage(Request $request, UploadService $service)
+    {
+        $url = $service->store($request);
+
+        if ($url !== false) {
+            return response()->json([
+                'error' => false,
+                'url' => $url
+            ]);
+        }
+
+        return response()->json(['error' => true]);
     }
 }
