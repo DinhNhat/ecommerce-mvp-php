@@ -15,7 +15,6 @@ class AdminProductController extends Controller
     public function index()
     {
         $products = Product::select(['id', 'name', 'is_available_for_purchase', 'price_in_cents'])
-        ->where('is_available_for_purchase', true)
         ->orderBy('id', 'asc')
         ->withCount('orders')
         ->get();
@@ -84,6 +83,18 @@ class AdminProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // delete a product by id
+        $product = Product::find($id);
+        $product->delete();
+        return redirect()->route('admin.products');
+    }
+
+    public function toggleAvailability(Request $request, $id)
+    {
+        $product = Product::find($id);
+        $product->is_available_for_purchase = !$product->is_available_for_purchase;
+        $product->save();
+
+        return redirect()->route('admin.products');
     }
 }

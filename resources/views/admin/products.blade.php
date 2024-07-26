@@ -29,7 +29,7 @@
         .dropdown-content {
             display: none;
             position: absolute;
-            background-color: #f1f1f1;
+            background-color: #f1ebeb;
             min-width: 160px;
             overflow: auto;
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
@@ -43,7 +43,11 @@
             display: block;
         }
 
-        .dropdown a:hover {background-color: #ddd;}
+        .dropdown-content a:hover {background-color: #cac9c9;}
+
+        .dropdown-content a.destructive { color: red; }
+
+        .dropdown-content a.destructive:hover {background-color: rgb(206, 19, 19); color:white;}
     </style>
 
     <div class="w-75 d-flex justify-content-between align-items-center">
@@ -67,23 +71,25 @@
         @if ($products->count() > 0)
             @foreach ($products as $product)
                 <tr>
-                    <td><i class="bi bi-check-circle" style="font-size: 1.2rem; color: cornflowerblue;"></i></td>
+                    <td>
+                        @if ($product->is_available_for_purchase)
+                            <i class="bi bi-check-circle" style="font-size: 1.2rem; color: cornflowerblue;"></i>
+                        @else
+                            <i class="bi bi-x-circle" style="font-size: 1.2rem; color: red;"></i>
+                        @endif
+                    </td>
                     <td>{{ $product->name }}</td>
                     <td>{{ \Illuminate\Support\Number::currency(($product->price_in_cents / 100), 'CAD')  }}</td>
                     <td>{{ $product->orders_count }}</td>
                     <td>
                         <i class="bi bi-three-dots-vertical dropbtn" style="font-size: 1.2rem; color: black; cursor: pointer"></i>
-                        <div id="drop-download{{ $product->id }}" class="dropdown-content">
-                            <a href="#home">Home</a>
-                            <a href="#about">About</a>
-                            <a href="#contact">Contact</a>
-                        </div>
+                        <x-product-actions-dropdown :product="$product" />
                     </td>
                 </tr>
             @endforeach
         @else
             <tr>
-                <td colspan="3">No products found</td>
+                <td colspan="5" class="text-center">No products found</td>
             </tr>
         @endif
     </table>
@@ -92,10 +98,35 @@
         $(function() {
             $(".dropbtn").each(function() {
                 $(this).on("click", function() {
-                    
+                    $(this).next().show();
                 });
             });
         });
+
+        // Close the dropdown if the user clicks outside of it or on other dropbtns
+
+        window.onclick = function(event) {
+            if (!event.target.matches(".dropbtn")) { // click outside of the dropbtn
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+       
+                    if ($(openDropdown).is(":visible")) {
+                        $(openDropdown).hide();
+                    }
+                }
+            } else {
+                // check if there are other dropdowns open then close them
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+       
+                    if ($(openDropdown).is(":visible") && openDropdown !== event.target.nextElementSibling) {
+                        $(openDropdown).hide();
+                    }
+                }
+            }
+        }
     </script>
 
 @endsection

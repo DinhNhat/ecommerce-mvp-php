@@ -26,6 +26,8 @@ Route::prefix('admin')->name('admin.')->group(function() {
     Route::get('products', [AdminProductController::class, 'index'])->name('products');
     Route::get('products/create', [AdminProductController::class, 'create'])->name('products.create');
     Route::post('products/store', [AdminProductController::class, 'store'])->name('products.store');
+    Route::put('products/{id}/toggleAvailability', [AdminProductController::class, 'toggleAvailability'])->name('products.toggleAvailability');
+    Route::delete('products/{id}', [AdminProductController::class, 'destroy'])->name('products.destroy');
 
     Route::get('customers', function() {
         return view('admin.customers');
