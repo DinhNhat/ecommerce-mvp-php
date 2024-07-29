@@ -31,7 +31,9 @@ Route::prefix('admin')->name('admin.')->group(function() {
     Route::delete('products/{id}', [AdminProductController::class, 'destroy'])->name('products.destroy');
 
     #Upload
-    Route::post('products/uploadImage', [AdminProductController::class, 'uploadImage'])->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])->name('products.uploadImage');
+    Route::post('products/uploadImage', [AdminProductController::class, 'uploadImage'])
+    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])
+    ->name('products.uploadImage');
 
     Route::get('customers', function() {
         return view('admin.customers');

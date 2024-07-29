@@ -11,7 +11,7 @@ class UploadService
                 $name = $request->file('image')->getClientOriginalName();
 
                 $path_full = 'images/' . date('Y/m/d');
-                $path = $request->file('image')->storeAs('public/' . $path_full, $name);
+                // $request->file('image')->storeAs('public/' . $path_full, $name);
 
                 return '/storage/' . $path_full . '/' . $name;
             } catch (\Exception $e) {

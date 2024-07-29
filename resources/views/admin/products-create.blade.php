@@ -44,6 +44,8 @@
                 @error('image')
                     <div class="d-block invalid-feedback">{{ $message }}</div>
                 @enderror
+                <div id="image-show"></div>
+                <input type="hidden" name="imageSave" id="image-save">
             </div>
 
             <div class="col-12">
@@ -86,7 +88,17 @@
                     url: "{{ route('admin.products.uploadImage') }}",
                     method: 'POST',
                     success: function(results) {
-                        console.log(results);
+                        if (results.error == false) {
+                            const rootURL = "{{ url('/') }}";
+                            const imageShowHtml = `<a href="${rootURL}/${results.url}" target="_blank"><img src="${rootURL}/${results.url}" width="100px"></a>`;
+                            $("#image-show").html(imageShowHtml);
+
+                            // $("#image-show").html('<a href="' + results.url + '" target="_blank">' + '<img src="'+ results.url +'" width="100px"></a>');
+
+                            $("#image-save").val(`results.url`);
+                        } else {
+                            alert('Uploading image error');
+                        }
                     },
                     error: function(error) {
                         console.log(error);
