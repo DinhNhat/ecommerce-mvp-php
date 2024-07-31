@@ -42,14 +42,14 @@ class AdminProductController extends Controller
         $validated = $request->validated();
 
         // Retrieve a portion of the validated input data...
-        $validated = $request->safe()->only(['name', 'description', 'priceInCents', 'file', 'image']);
+        $validated = $request->safe()->only(['name', 'description', 'priceInCents', 'file', 'image', 'imageSave']);
         //dd($validated);
         $product = Product::create([
             'name' => $validated['name'], 
             'description' => $validated['description'], 
             'price_in_cents' => $validated['priceInCents'], 
             'file_path' => $validated['file']->getClientOriginalName(), 
-            'image_path' => $validated['image']->getClientOriginalName()
+            'image_path' => $validated['imageSave']
         ]);
         
         return redirect()->route('admin.products');

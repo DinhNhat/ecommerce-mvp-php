@@ -42,7 +42,8 @@ class StoreProductRequest extends FormRequest
                     'application/pdf'
                 ])->min('1kb')
             ],
-            'image' => ['required', File::types(['png', 'jpeg', 'jpg'])->min('10kb')->max('3000kb')], // Validate that an uploaded file is exactly 400 kilobytes...
+            'image' => ['required', File::types(['PNG', 'png', 'JPEG', 'jpeg', 'JPG'])->min('10kb')], // Validate that an uploaded file is exactly 400 kilobytes...
+            'imageSave' => ['nullable', 'string']
         ];
     }
 

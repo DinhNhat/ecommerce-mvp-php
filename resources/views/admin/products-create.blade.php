@@ -94,8 +94,8 @@
                             $("#image-show").html(imageShowHtml);
 
                             // $("#image-show").html('<a href="' + results.url + '" target="_blank">' + '<img src="'+ results.url +'" width="100px"></a>');
-
-                            $("#image-save").val(`results.url`);
+                            console.log(`image path: ${results.url}`);
+                            $("#image-save").val(`${results.url}`);
                         } else {
                             alert('Uploading image error');
                         }
