@@ -6,7 +6,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Services\UploadService;
 use App\Models\Product;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Storage;
 
 class AdminProductController extends Controller
 {
@@ -15,7 +15,7 @@ class AdminProductController extends Controller
      */
     public function index()
     {
-        $products = Product::select(['id', 'name', 'is_available_for_purchase', 'price_in_cents'])
+        $products = Product::select(['id', 'name', 'is_available_for_purchase', 'price_in_cents', 'image_path'])
         ->orderBy('id', 'asc')
         ->withCount('orders')
         ->get();
@@ -43,7 +43,7 @@ class AdminProductController extends Controller
 
         // Retrieve a portion of the validated input data...
         $validated = $request->safe()->only(['name', 'description', 'priceInCents', 'file', 'image', 'imageSave']);
-        //dd($validated);
+        
         $product = Product::create([
             'name' => $validated['name'], 
             'description' => $validated['description'], 
@@ -86,7 +86,12 @@ class AdminProductController extends Controller
     {
         // delete a product by id
         $product = Product::find($id);
+
+        $deletedPath = public_path() . $product->image_path;
+        unlink($deletedPath); // delete the image from the public folder
+
         $product->delete();
+
         return redirect()->route('admin.products');
     }
 

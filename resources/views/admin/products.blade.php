@@ -45,16 +45,23 @@
 
         .dropdown-content a:hover {background-color: #cac9c9;}
 
-        .dropdown-content a.destructive { color: red; }
+        .dropdown-content a.destructive { color: #ef4444; }
 
-        .dropdown-content a.destructive:hover {background-color: rgb(206, 19, 19); color:white;}
+        .dropdown-content a.destructive:hover {background-color: #f87171; color:white;}
+
+        .avatar {
+            vertical-align: middle;
+            width: 90px;
+            height: auto;
+            border-radius: 20%;
+        }
     </style>
 
     <div class="w-75 d-flex justify-content-between align-items-center">
         <h2>Products page</h2>
         <a 
             href="{{ route('admin.products.create') }}" 
-            class="btn btn-dark" 
+            class="btn bs-btn-indigo" 
             role="button"
         >Add Product</a>
     </div>
@@ -62,6 +69,7 @@
     <table>
         <tr>
             <th></th>
+            <th>Image</th>
             <th>Name</th>
             <th>Price</th>
             <th>Orders</th>
@@ -73,10 +81,15 @@
                 <tr>
                     <td>
                         @if ($product->is_available_for_purchase)
-                            <i class="bi bi-check-circle" style="font-size: 1.2rem; color: cornflowerblue;"></i>
+                            <i class="bi bi-check-circle" style="font-size: 1.7rem; color: cornflowerblue;"></i>
                         @else
-                            <i class="bi bi-x-circle" style="font-size: 1.2rem; color: red;"></i>
+                            <i class="bi bi-x-circle" style="font-size: 1.7rem; color: red;"></i>
                         @endif
+                    </td>
+                    <td>
+                        <a href="{{ url('/') . $product->image_path }}" target="_blank">
+                            <img src="{{ url('/') . $product->image_path }}" alt="Avatar" class="avatar">
+                        </a>
                     </td>
                     <td>{{ $product->name }}</td>
                     <td>{{ \Illuminate\Support\Number::currency(($product->price_in_cents / 100), 'CAD')  }}</td>

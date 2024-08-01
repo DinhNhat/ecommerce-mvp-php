@@ -44,7 +44,7 @@
                 @error('image')
                     <div class="d-block invalid-feedback">{{ $message }}</div>
                 @enderror
-                <div id="image-show"></div>
+                <div class="mt-2" id="image-show"></div>
                 <input type="hidden" name="imageSave" id="image-save">
             </div>
 
@@ -71,9 +71,9 @@
                 }
             });
 
-            $("[data='product-file']").on('change', function() {
-                console.log(123);
-            });
+            // $("[data='product-file']").on('change', function() {
+            //     console.log(123);
+            // });
 
 
             $("[data='product-image']").on('change', function() {
