@@ -1,6 +1,6 @@
 <div id="drop-download{{ $product->id }}" class="dropdown-content">
     <a href="#download">Download</a>
-    <a href="#edit">Edit</a>
+    <a href="{{ route('admin.products.edit', ['id' => $product->id]) }}">Edit</a>
     <a href="javascript:void(0);" onclick="$(this).next('[data-form-toggle-avail]').submit();">
         {{ ($product->is_available_for_purchase == true) ? 'Deactivate' : 'Activate' }}
     </a>
