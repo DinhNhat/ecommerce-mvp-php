@@ -61,7 +61,7 @@
         <h2>Products page</h2>
         <a 
             href="{{ route('admin.products.create') }}" 
-            class="btn bs-btn-indigo" 
+            class="btn btn-dark" 
             role="button"
         >Add Product</a>
     </div>

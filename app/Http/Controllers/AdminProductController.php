@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Services\UploadFileService;
+use App\Http\Services\UploadImageService;
 use App\Http\Services\UploadService;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -10,6 +12,15 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminProductController extends Controller
 {
+    private $fileService;
+    private $imageService;
+
+    public function __construct(UploadFileService $fileService, UploadImageService $imageService)
+    {
+        $this->fileService = $fileService;
+        $this->imageService = $imageService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -41,6 +52,8 @@ class AdminProductController extends Controller
         // validate and store the product
         $validated = $request->validated();
 
+        $fileUrl = $this->fileService->store($request);
+
         // Retrieve a portion of the validated input data...
         $validated = $request->safe()->only(['name', 'description', 'priceInCents', 'file', 'image', 'imageSave']);
         
@@ -48,7 +61,7 @@ class AdminProductController extends Controller
             'name' => $validated['name'], 
             'description' => $validated['description'], 
             'price_in_cents' => $validated['priceInCents'], 
-            'file_path' => $validated['file']->getClientOriginalName(), 
+            'file_path' => ($fileUrl !== false) ? $fileUrl : '', 
             'image_path' => $validated['imageSave']
         ]);
         
@@ -87,8 +100,11 @@ class AdminProductController extends Controller
         // delete a product by id
         $product = Product::find($id);
 
-        $deletedPath = public_path() . $product->image_path;
-        unlink($deletedPath); // delete the image from the public folder
+        $deletedImgPath = public_path() . $product->image_path;
+        unlink($deletedImgPath); // delete the image from the public folder
+
+        $deletedFilePath = public_path() . $product->file_path;
+        unlink($deletedFilePath); // delete the file from the public folder
 
         $product->delete();
 
@@ -104,9 +120,9 @@ class AdminProductController extends Controller
         return redirect()->route('admin.products');
     }
 
-    public function uploadImage(Request $request, UploadService $service)
+    public function uploadImage(Request $request)
     {
-        $url = $service->store($request);
+        $url = $this->imageService->store($request);
 
         if ($url !== false) {
             return response()->json([

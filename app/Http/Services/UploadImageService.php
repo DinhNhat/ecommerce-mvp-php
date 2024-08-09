@@ -2,7 +2,9 @@
 
 namespace App\Http\Services;
 
-class UploadService
+use App\Contracts\UploadMediaInterface;
+
+class UploadImageService implements UploadMediaInterface
 {
     public function store($request)
     {
@@ -18,6 +20,5 @@ class UploadService
                 return false;
             }
         }
-        
     }
 }
