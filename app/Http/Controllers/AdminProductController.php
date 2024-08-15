@@ -9,6 +9,7 @@ use App\Http\Services\UploadService;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AdminProductController extends Controller
 {
@@ -93,7 +94,42 @@ class AdminProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $product = Product::find($id);
+
+        if (!empty($request->name) && $product->name !== $request->name) {
+            $product->name = $request->name;
+        }
+
+        if (!empty($request->priceInCents) && $product->price_in_cents !== $request->priceInCents) {
+            $product->price_in_cents = $request->priceInCents;
+        }
+
+        if (!empty($request->description) && $product->description !== $request->description) {
+            $product->description = $request->description;
+        }
+
+        if (!empty($request->imageSave) && !empty($request->image) && $product->image_path !== $request->imageSave) {
+            // delete the old image
+            $deletedImgPath = public_path() . $product->image_path;
+            unlink($deletedImgPath);
+
+            // save new image path
+            $this->imageService->store($request);
+            $product->image_path = $request->imageSave;
+        }
+
+        if (!empty($request->file)) {
+            // delete the old file
+            $deletedFilePath = public_path() . $product->file_path;
+            unlink($deletedFilePath);
+
+            $fileUrl = $this->fileService->store($request);
+            $product->file_path = ($fileUrl !== false) ? $fileUrl : '';
+        }
+
+        $product->save();
+
+        return redirect()->route('admin.products');
     }
 
     /**
@@ -105,11 +141,18 @@ class AdminProductController extends Controller
         $product = Product::find($id);
 
         $deletedImgPath = public_path() . $product->image_path;
-        unlink($deletedImgPath); // delete the image from the public folder
+        // check if the image path exists
+        if (Storage::disk('public')->exists($product->image_path_without_storage)) {
+            unlink($deletedImgPath); // delete the image from the public folder
+        }
+        
 
         $deletedFilePath = public_path() . $product->file_path;
-        unlink($deletedFilePath); // delete the file from the public folder
-
+        // check if the file path exists
+        if (Storage::disk('public')->exists($product->file_path_without_storage)) {
+            unlink($deletedFilePath); // delete the file from the public folder
+        }
+        
         $product->delete();
 
         return redirect()->route('admin.products');

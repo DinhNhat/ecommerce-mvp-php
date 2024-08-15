@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('image_path');
             $table->string('file_path');
             $table->longText('description');
-            $table->boolean('is_available_for_purchase')->default(true);
+            $table->boolean('is_available_for_purchase')->default(false);
 
             $table->timestamp('created_at')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->nullable();

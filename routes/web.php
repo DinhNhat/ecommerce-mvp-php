@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminProductController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,19 @@ Route::prefix('admin')->name('admin.')->group(function() {
     
     Route::put('products/{id}/toggleAvailability', [AdminProductController::class, 'toggleAvailability'])->name('products.toggleAvailability');
     Route::delete('products/{id}', [AdminProductController::class, 'destroy'])->name('products.destroy');
+    Route::get('products/{id}/download', function($id) {
+
+        $product = \App\Models\Product::findOrFail($id);
+        $fileExists = Storage::disk('public')->exists($product->file_path_without_storage);
+        if ($fileExists) {
+            $downloadedUrl = url('/').$product->file_path;
+            // dd($downloadedUrl);
+            return response()->download($downloadedUrl); //Storage::download($downloadedUrl, $product->last_file_name);
+        } else {
+            return redirect()->route('admin.products');
+        }
+
+    })->name('products.download');
 
     #Upload
     Route::post('products/uploadImage', [AdminProductController::class, 'uploadImage'])

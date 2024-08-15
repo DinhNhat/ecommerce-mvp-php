@@ -4,7 +4,7 @@
 
     <div>
         <h2>Edit product page</h2>
-        <form method="POST" action="" class="row g-3 w-75" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('admin.products.update', ['id' => $product->id]) }}" class="row g-3 w-75" enctype="multipart/form-data">
             @method('PUT')
             @csrf
 
@@ -34,6 +34,12 @@
             <div class="col-12">
                 <label for="file" class="form-label">File</label>
                 <input data="product-file" class="form-control" type="file" id="file" name="file">
+                @if (\Illuminate\Support\Facades\Storage::disk('public')->exists($product->file_path_without_storage))
+                    <div class="mt-2">
+                        {{-- <a href="{{ url('/').$product->file_path }}">{{ $product->last_file_name }}</a> --}}
+                        <p class="text-muted">{{ $product->last_file_name }}</p>
+                    </div>
+                @endif
                 @error('file')
                     <div class="d-block invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -46,7 +52,9 @@
                     <div class="d-block invalid-feedback">{{ $message }}</div>
                 @enderror
                 <div class="mt-2" id="image-show">
-                    <a href="{{ url('/').$product->image_path }}" target="_blank"><img src="{{ url('/').$product->image_path }}" width="100px"></a>
+                    <a href="{{ url('/').$product->image_path }}" target="_blank">
+                        <img class="img-thumbnail" src="{{ url('/').$product->image_path }}" width="250">
+                    </a>
                 </div>
                 <input type="hidden" name="imageSave" id="image-save">
             </div>
