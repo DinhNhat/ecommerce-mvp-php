@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminProductController;
+use App\Http\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -20,11 +21,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/login', function() {
+    echo "<h1>Login is required</h1>";
+})->name('login');
+
 Route::prefix('admin')->name('admin.')->group(function() {
     
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('products', [AdminProductController::class, 'index'])->name('products');
+    Route::get('products', [AdminProductController::class, 'index'])->name('products')->middleware(Authenticate::class);;
     Route::get('products/create', [AdminProductController::class, 'create'])->name('products.create');
     Route::post('products/store', [AdminProductController::class, 'store'])->name('products.store');
     Route::get('products/{id}/edit', [AdminProductController::class, 'edit'])->name('products.edit');
@@ -37,9 +42,9 @@ Route::prefix('admin')->name('admin.')->group(function() {
         $product = \App\Models\Product::findOrFail($id);
         $fileExists = Storage::disk('public')->exists($product->file_path_without_storage);
         if ($fileExists) {
-            $downloadedUrl = url('/').$product->file_path;
-            // dd($downloadedUrl);
-            return response()->download($downloadedUrl); //Storage::download($downloadedUrl, $product->last_file_name);
+            $downloadedUrl = Storage::url(str_replace('/storage/', '', $product->file_path));
+            return redirect($downloadedUrl);
+            //return Storage::download(str_replace('/storage/', '', $product->file_path), $product->last_file_name);
         } else {
             return redirect()->route('admin.products');
         }
