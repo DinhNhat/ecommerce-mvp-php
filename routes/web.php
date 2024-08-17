@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminProductController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -22,14 +23,16 @@ Route::get('/', function () {
 });
 
 Route::get('/login', function() {
-    echo "<h1>Login is required</h1>";
+    return view('auth.login');
 })->name('login');
 
-Route::prefix('admin')->name('admin.')->group(function() {
+Route::post('/login', [LoginController::class, 'authenticate'])->name('login.attempt');
+
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function() {
     
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('products', [AdminProductController::class, 'index'])->name('products')->middleware(Authenticate::class);;
+    Route::get('products', [AdminProductController::class, 'index'])->name('products');
     Route::get('products/create', [AdminProductController::class, 'create'])->name('products.create');
     Route::post('products/store', [AdminProductController::class, 'store'])->name('products.store');
     Route::get('products/{id}/edit', [AdminProductController::class, 'edit'])->name('products.edit');
