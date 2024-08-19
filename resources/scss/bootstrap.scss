@@ -1,0 +1,80 @@
+@import "mixins/banner";
+@include bsBanner("");
+
+// Customize some defaults
+$teal: #26a69a;
+$purple: #ba68c8;
+$dark: #004d40;
+$primary: #5c6bc0;
+$secondary: #bdbdbd;
+$success: #66bb6a;
+$danger: #f44336;
+
+$custom-colors: (
+    "teal-dark": #115e59,
+    "amber": #f59e0b,
+    "yellow": mix(white, #facc15, 20%),
+    "lime": mix(white, #bef264, 60%),
+);
+
+
+// scss-docs-start import-stack
+// Configuration
+@import "functions";
+@import "variables";
+
+// Merge the maps
+$theme-colors: (
+    "teal": $teal, 
+    "purple": $purple, 
+    "dark": $dark,
+    "primary": $primary,
+    "secondary": $secondary,
+    "success": $success,
+    "danger": $danger
+);
+$theme-colors: map-merge($theme-colors, $custom-colors);
+
+@import "maps";
+@import "mixins";
+@import "utilities";
+
+// Layout & components
+@import "root";
+@import "reboot";
+@import "type";
+// @import "images";
+@import "containers";
+@import "grid";
+// @import "tables";
+@import "forms";
+@import "buttons";
+@import "transitions";
+// @import "dropdown";
+// @import "button-group";
+// @import "nav";
+// @import "navbar";
+@import "card";
+// @import "accordion";
+// @import "breadcrumb";
+// @import "pagination";
+// @import "badge";
+// @import "alert";
+// @import "progress";
+// @import "list-group";
+// @import "close";
+// @import "toasts";
+// @import "modal";
+// @import "tooltip";
+// @import "popover";
+// @import "carousel";
+// @import "spinners";
+// @import "offcanvas";
+// @import "placeholders";
+
+// Helpers
+@import "helpers";
+
+// Utilities
+@import "utilities/api";
+// scss-docs-end import-stack
