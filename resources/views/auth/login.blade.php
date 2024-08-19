@@ -34,7 +34,7 @@
     </div>
 
     <div class="my-3">
-        <button type="submit" class="btn btn-primary">Sign in</button>
+        <button type="submit" class="btn btn-emerald">Sign in</button>
       </div>
 </form>
 
