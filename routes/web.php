@@ -3,7 +3,11 @@
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CustomerHomeController;
+use App\Http\Controllers\CustomerOrderController;
+use App\Http\Controllers\CustomerProductController;
 use App\Http\Middleware\Authenticate;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,9 +22,9 @@ use Illuminate\Support\Facades\Storage;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::get('/login', function() {
     return view('auth.login');
@@ -67,4 +71,17 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function() {
         return view('admin.orders');
     })->name('sales');
 
+});
+
+Route::name('customer.')->group(function() {
+
+    Route::get('/', [CustomerHomeController::class, 'index'])->name('home');
+
+    Route::get('/products', [CustomerProductController::class, 'index'])->name('products');
+
+    Route::get('/orders', [CustomerOrderController::class, 'index'])->name('orders');
+});
+
+Route::get('hashed/pass/{pass}', function($pass) {
+    return Hash::make($pass);
 });

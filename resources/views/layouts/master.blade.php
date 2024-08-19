@@ -15,7 +15,12 @@
     <link rel="stylesheet" href="<?php echo url('/'),'/css/master.css'.'?v='.filemtime('css/master.css') ?>">
 </head>
 <body>
-    @include('layouts.header')
+    @if (collect(['customer.home', 'customer.products', 'customer.orders'])->contains(Route::currentRouteName()))
+        @include('layouts.customer-header')
+    @else
+        @include('layouts.header')
+    @endif
+    
 
     <div class="container mt-5">
         @yield('content')
